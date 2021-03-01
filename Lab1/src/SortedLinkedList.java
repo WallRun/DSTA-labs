@@ -41,6 +41,19 @@ public class SortedLinkedList<T extends Comparable<T>> {
         System.out.println();
     }
 
+    public int sumItems() {
+        if (first == null) return 0;
+        if (!(first.getValue() instanceof Integer)) {
+            throw new IllegalStateException("this list is not an integer list");
+        }
+        return sumItems(first, 0);
+    }
+
+    private int sumItems(Node thisNode, int sum) {
+        if (thisNode == null) return sum;
+        return sumItems(thisNode.next, sum + (Integer) thisNode.getValue());
+    }
+
 
     private class Node {
         private T value;
