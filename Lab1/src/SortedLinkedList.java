@@ -16,6 +16,16 @@ public class SortedLinkedList<T extends Comparable<T>> {
         return size == 0;
     }
 
+    public boolean search(T value) {
+        Node current = first;
+        for (int i = 0; i < size; i++) {
+            if (current.getValue() == value) return true;
+            else current = current.getNext();
+        }
+
+        return false;
+    }
+
 
     private class Node {
         private T value;
