@@ -1,5 +1,12 @@
 public class SortedLinkedList<T extends Comparable<T>> {
 
+    private Node first;
+    private int size;
+
+    private int getSize() {
+        return size;
+    }
+
 
     private class Node {
         private T value;
