@@ -3,8 +3,13 @@ public class SortedLinkedList<T extends Comparable<T>> {
     private Node first;
     private int size;
 
-    private int getSize() {
+    public int getSize() {
         return size;
+    }
+
+    public void clear() {
+        first = null;
+        size = 0;
     }
 
 
