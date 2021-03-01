@@ -12,6 +12,10 @@ public class SortedLinkedList<T extends Comparable<T>> {
         size = 0;
     }
 
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
 
     private class Node {
         private T value;
