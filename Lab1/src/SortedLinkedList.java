@@ -26,6 +26,21 @@ public class SortedLinkedList<T extends Comparable<T>> {
         return false;
     }
 
+    public void print() {
+        Node current = first;
+        System.out.print("(" + size + ")" + " [");
+
+        for (int i = 0; i < size; i++) {
+            if (current==null) break;
+            if (current.next!=null) System.out.print(current.getValue() + ", ");
+            else System.out.print(current.getValue());
+            current = current.getNext();
+        }
+
+        System.out.print("]");
+        System.out.println();
+    }
+
 
     private class Node {
         private T value;
