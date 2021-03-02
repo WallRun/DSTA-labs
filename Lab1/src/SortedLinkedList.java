@@ -41,6 +41,25 @@ public class SortedLinkedList<T extends Comparable<T>> {
 
     }
 
+    public void delete(T value) {
+        Node current = first;
+        Node prev = null;
+        for (int i = 0; i < size; i++) {
+
+            if (current.getValue()==value) {
+                if (i==0) first = current.getNext();
+                if (prev!=null) prev.setNext(current.getNext());
+                size--;
+                return;
+            }
+
+            prev = current;
+            current = current.getNext();
+        }
+
+        System.out.println("the item was not deleted, as it is not in the list");
+    }
+
     public int getSize() {
         return size;
     }
