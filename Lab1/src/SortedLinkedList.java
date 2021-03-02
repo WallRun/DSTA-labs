@@ -3,6 +3,44 @@ public class SortedLinkedList<T extends Comparable<T>> {
     private Node first;
     private int size;
 
+
+    public void add(T value) {
+        Node newNode = new Node();
+        newNode.setValue(value);
+
+        if (isEmpty()) {
+            first = newNode;
+            size++;
+        } else {
+            Node prev = null;
+            Node current = first;
+
+            for (int i = 0; i < size; i++) {
+                if (newNode.getValue().compareTo(current.getValue()) <= 0) {
+                    if (i==0) {
+                        first = newNode;
+                        first.setNext(current);
+                    } else {
+                        prev.setNext(newNode);
+                        newNode.setNext(current);
+                    }
+
+                    size++;
+                    return;
+                }
+
+                prev = current;
+                current = current.getNext();
+                if (current==null) {
+                    prev.setNext(newNode);
+                    size++;
+                    return;
+                }
+            }
+        }
+
+    }
+
     public int getSize() {
         return size;
     }
