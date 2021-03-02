@@ -116,9 +116,8 @@ public class SortedLinkedList<T extends Comparable<T>> {
         private T value;
         private Node next;
 
-        private Node(T value, Node next) {
-            this.value = value;
-            this.next = next;
+        private Node() {
+
         }
 
         private Node(T value) {
