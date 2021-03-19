@@ -57,7 +57,7 @@ public class SortedLinkedList<T> {
         for (int i = 0; i < fixedSize; i++) {
             boolean flag = false;
             if (current.getValue()==value) {
-                if (i==0) first = current.getNext();
+                if (current.equals(first)) first = current.getNext();
                 if (prev!=null) prev.setNext(current.getNext());
                 size--;
                 flag = true;
@@ -65,12 +65,13 @@ public class SortedLinkedList<T> {
             }
 
             if (!flag) {
-                prev = current;
+                if (prev == null) prev = first;
+                else prev = current;
                 current = current.getNext();
             } else {
-                if (prev != null) {
-                    current = prev.getNext();
-                }
+                if (prev == null) current = first;
+                else current = current.getNext();
+
             }
         }
 
@@ -131,7 +132,7 @@ public class SortedLinkedList<T> {
     }
 
 
-    private class Node {
+    public class Node {
         private T value;
         private Node next;
 
@@ -162,5 +163,14 @@ public class SortedLinkedList<T> {
         public void setNext(Node next) {
             this.next = next;
         }
+
+        @Override
+        public boolean equals(Object other) {
+
+            if (getClass()!= other.getClass()) return false;
+
+            return next == (((Node) other).next) && value == (((Node) other).value);
+
+         }
     }
 }
