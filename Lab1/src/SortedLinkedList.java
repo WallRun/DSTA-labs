@@ -44,20 +44,32 @@ public class SortedLinkedList<T extends Comparable<T>> {
     public void delete(T value) {
         Node current = first;
         Node prev = null;
-        for (int i = 0; i < size; i++) {
+        int fixedSize = getSize();
+        boolean wasDeleted = false;
 
+        for (int i = 0; i < fixedSize; i++) {
+            boolean flag = false;
             if (current.getValue()==value) {
                 if (i==0) first = current.getNext();
                 if (prev!=null) prev.setNext(current.getNext());
                 size--;
-                return;
+                flag = true;
+                wasDeleted = true;
             }
 
-            prev = current;
-            current = current.getNext();
+            if (!flag) {
+                prev = current;
+                current = current.getNext();
+            } else {
+                if (prev != null) {
+                    current = prev.getNext();
+                }
+            }
         }
 
-        System.out.println("the item was not deleted, as it is not in the list");
+        if (!wasDeleted) {
+            System.out.println("the item was not deleted, as it is not in the list");
+        }
     }
 
     public int getSize() {
