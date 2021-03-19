@@ -1,10 +1,15 @@
-public class SortedLinkedList<T extends Comparable<T>> {
+public class SortedLinkedList<T> {
 
     private Node first;
     private int size;
 
 
     public void add(T value) {
+        if (!(value instanceof Comparable)) {
+            throw new IllegalArgumentException("the class " + value.getClass().getSimpleName() + " is not comparable");
+        }
+
+
         Node newNode = new Node();
         newNode.setValue(value);
 
@@ -16,7 +21,9 @@ public class SortedLinkedList<T extends Comparable<T>> {
             Node current = first;
 
             for (int i = 0; i < size; i++) {
-                if (newNode.getValue().compareTo(current.getValue()) <= 0) {
+                Comparable newVal = (Comparable) newNode.getValue();
+                Comparable currVal = (Comparable) current.getValue();
+                if (newVal.compareTo(currVal) <= 0) {
                     if (i==0) {
                         first = newNode;
                         first.setNext(current);
