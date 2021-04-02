@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.List;
+
 public class BalancedBinarySearchTree {
     private Node root;
     private int size;
@@ -5,6 +8,7 @@ public class BalancedBinarySearchTree {
     public void addNode(int item) {
         root = addNodeRec(item, root);
         size++;
+        balance();
     }
 
     private Node addNodeRec(int item, Node p) {
@@ -24,6 +28,7 @@ public class BalancedBinarySearchTree {
         if (search(item)) {
             root = deleteNodeRec(item, root);
             size--;
+            balance();
         } else {
             System.out.println("Item not found and not deleted");
         }
@@ -58,6 +63,15 @@ public class BalancedBinarySearchTree {
     }
 
 
+    //todo this
+    private void balance() {
+        for (Node n:getNodeList()) {
+            System.out.print(n.getValue() + " ");
+        }
+        System.out.println("balanced");
+    }
+
+
     public boolean search(int item) {
         return searchRec(item, root);
     }
@@ -77,6 +91,18 @@ public class BalancedBinarySearchTree {
 
     public boolean isEmpty() {
         return root == null && size == 0;
+    }
+
+    private List<Node> getNodeList() {
+        return getNodeListRec(root, new LinkedList<>());
+    }
+
+    private List<Node> getNodeListRec(Node p, List<Node> list) {
+        if (p == null) return list;
+        list.add(p);
+        list = getNodeListRec(p.getRight(), list);
+        list = getNodeListRec(p.getLeft(), list);
+        return list;
     }
 
     public void printPreorderTraversal() {

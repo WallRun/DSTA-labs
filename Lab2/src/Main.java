@@ -6,12 +6,5 @@ public class Main {
         tree.addNode(17);
         tree.addNode(30);
         tree.addNode(40);
-
-        tree.printPreorderTraversal();
-        System.out.println(tree.getSize());
-        tree.deleteNode(35);
-
-        tree.printPreorderTraversal();
-        System.out.println(tree.getSize());
     }
 }
