@@ -23,6 +23,7 @@ public class BalancedBinarySearchTree {
     public void deleteNode(int item) {
         if (search(item)) {
             root = deleteNodeRec(item, root);
+            size--;
         } else {
             System.out.println("Item not found and not deleted");
         }
@@ -37,6 +38,7 @@ public class BalancedBinarySearchTree {
     }
 
     private Node deleteByRef(Node p) {
+        if (p == null)return p;
         if (p.getLeft() == null) {
             return p.getRight();
         } else if (p.getRight() == null) {
@@ -76,6 +78,48 @@ public class BalancedBinarySearchTree {
     public boolean isEmpty() {
         return root == null && size == 0;
     }
+
+    public void printPreorderTraversal() {
+        System.out.print("Preorder: ");
+        printPreorderRec(root);
+        System.out.println();
+    }
+
+    private void printPreorderRec(Node p) {
+        if (p == null) return;
+        System.out.print(p.value + " ");
+        printPreorderRec(p.getLeft());
+        printPreorderRec(p.getRight());
+    }
+
+    public void printInorderTraversal() {
+        System.out.print("Inorder: ");
+        printInorderRec(root);
+        System.out.println();
+    }
+
+    private void printInorderRec(Node p) {
+        if (p == null) return;
+
+        printInorderRec(p.getLeft());
+        System.out.print(p.value + " ");
+        printInorderRec(p.getRight());
+    }
+
+    public void printPostorderTraversal() {
+        System.out.print("Postorder: ");
+        printPostorderRec(root);
+        System.out.println();
+    }
+
+    private void printPostorderRec(Node p) {
+        if (p == null) return;
+
+        printPostorderRec(p.getLeft());
+        printPostorderRec(p.getRight());
+        System.out.print(p.value + " ");
+    }
+
 
     public int getSize() {
         return size;
