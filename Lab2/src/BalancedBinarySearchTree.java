@@ -5,7 +5,9 @@ public class BalancedBinarySearchTree {
 
 
 
-    
+    public boolean isEmpty() {
+        return root == null;
+    }
 
 
 
