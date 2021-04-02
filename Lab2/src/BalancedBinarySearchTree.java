@@ -1,21 +1,96 @@
 public class BalancedBinarySearchTree {
     private Node root;
+    private int size;
+
+    public void addNode(int item) {
+        root = addNodeRec(item, root);
+        size++;
+    }
+
+    private Node addNodeRec(int item, Node p) {
+        if (p == null) {
+            p = new Node();
+            p.setValue(item);
+        } else if (item < p.getValue()) {
+            p.setLeft(addNodeRec(item, p.getLeft()));
+        } else {
+            p.setRight(addNodeRec(item, p.getRight()));
+        }
+
+        return p;
+    }
+
+    public void deleteNode(int item) {
+        if (search(item)) {
+            root = deleteNodeRec(item, root);
+        } else {
+            System.out.println("Item not found and not deleted");
+        }
+    }
+
+    private Node deleteNodeRec(int item, Node p) {
+        if (item < p.getValue()) p.setLeft(deleteNodeRec(item, p.getLeft()));
+        else if (item > p.getValue()) p.right = deleteNodeRec(item, p.getRight());
+        else p = deleteByRef(p);
+
+        return p;
+    }
+
+    private Node deleteByRef(Node p) {
+        if (p.getLeft() == null) {
+            return p.getRight();
+        } else if (p.getRight() == null) {
+            return p.getLeft();
+        } else {
+            Node p1 = p.getRight();
+            while(p1.getLeft()!= null) {
+                p1 = p1.getLeft();
+            }
+
+            p.setValue(p1.getValue());
+            p.setRight(deleteByRef(deleteNodeRec(p.getValue(), p.getRight())));
 
 
-
-
-
-    public boolean isEmpty() {
-        return root == null;
+            return p;
+        }
     }
 
 
+    public boolean search(int item) {
+        return searchRec(item, root);
+    }
 
+    private boolean searchRec(int item, Node p) {
+        if (p == null) return false;
+        if (p.getValue() == item) return true;
+        if (p.getValue() > item) return searchRec(item, p.getLeft());
+        else return searchRec(item, p.getRight());
+    }
+
+    public void makeEmpty() {
+        size = 0;
+        root = null;
+    }
+
+
+    public boolean isEmpty() {
+        return root == null && size == 0;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    ///////////////////Node/////////////////////
 
     private class Node {
         private Node left;
         private int value;
         private Node right;
+
+        public Node() {
+
+        }
 
         public Node getLeft() {
             return left;
