@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -6,56 +8,70 @@ public class BalancedBinarySearchTree {
     private int size;
 
     public void addNode(int item) {
-        root = addNodeRec(item, root);
+        root = addNodeRec(item, root, root);
         size++;
         balance();
     }
 
-    private Node addNodeRec(int item, Node p) {
+    private void addNodeUnbalanced(int item) {
+        List<Node> nodes = getLeafNodes();
+        Node min = nodes.get(0);
+        for (int i = 1; i < nodes.size(); i++) {
+            Node temp = nodes.get(i);
+            if (temp.getHeight() < min.getHeight()) min = temp;
+        }
+
+        addNodeRec(item, min, min);
+        size++;
+    }
+
+    private Node addNodeRec(int item, Node p, Node parent) {
         if (p == null) {
             p = new Node();
             p.setValue(item);
+            p.setParent(parent);
+
         } else if (item < p.getValue()) {
-            p.setLeft(addNodeRec(item, p.getLeft()));
+            p.setLeft(addNodeRec(item, p.getLeft(), p));
         } else {
-            p.setRight(addNodeRec(item, p.getRight()));
+            p.setRight(addNodeRec(item, p.getRight(), p));
         }
 
         return p;
     }
 
     public void deleteNode(int item) {
-        if (search(item)) {
-            root = deleteNodeRec(item, root);
+        while (search(item)) {
+            root = deleteNodeRec(item, root, true);
             size--;
             balance();
-        } else {
-            System.out.println("Item not found and not deleted");
         }
     }
 
-    private Node deleteNodeRec(int item, Node p) {
-        if (item < p.getValue()) p.setLeft(deleteNodeRec(item, p.getLeft()));
-        else if (item > p.getValue()) p.right = deleteNodeRec(item, p.getRight());
-        else p = deleteByRef(p);
+    private Node deleteNodeRec(int item, Node p, boolean deleteRef) {
+        if (item < p.getValue()) p.setLeft(deleteNodeRec(item, p.getLeft(), deleteRef));
+        else if (item > p.getValue()) p.right = deleteNodeRec(item, p.getRight(), deleteRef);
+        else if (deleteRef){
+            p = deleteByRef(p);
+        }
 
         return p;
     }
 
     private Node deleteByRef(Node p) {
-        if (p == null)return p;
+        if (p == null) return p;
         if (p.getLeft() == null) {
             return p.getRight();
         } else if (p.getRight() == null) {
             return p.getLeft();
         } else {
             Node p1 = p.getRight();
-            while(p1.getLeft()!= null) {
+            while (p1.getLeft() != null) {
                 p1 = p1.getLeft();
             }
 
             p.setValue(p1.getValue());
-            p.setRight(deleteByRef(deleteNodeRec(p.getValue(), p.getRight())));
+            p.setRight(deleteByRef(deleteNodeRec(p.getValue(), p.getRight(), false)));
 
 
             return p;
@@ -63,12 +79,66 @@ public class BalancedBinarySearchTree {
     }
 
 
-    //todo this
     private void balance() {
-        for (Node n:getNodeList()) {
-            System.out.print(n.getValue() + " ");
+        if (size == 1) return;
+        List<Node> list = getNodeList();
+        list.sort(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return Integer.compare(o1.getValue(), o2.getValue());
+            }
+        });
+        int fixedSize = size;
+        int middle = (int) (Math.ceil((float) fixedSize / 2.0) -1);
+        makeEmpty();
+        root = list.get(middle);
+        root.setRight(null);
+        root.setLeft(null);
+        root.setParent(null);
+        size = 1;
+        int leftIndex = middle - 1;
+        int rightIndex = middle + 1;
+
+
+
+        while (leftIndex >= 0 || rightIndex < fixedSize) {
+            int leftToInsert = Integer.MIN_VALUE;
+            int rightToInsert = Integer.MIN_VALUE;
+            if (leftIndex >= 0) {
+                leftToInsert = list.get(leftIndex).getValue();
+            }
+            if (rightIndex < fixedSize) {
+                rightToInsert = list.get(rightIndex).getValue();
+            }
+
+
+            if (leftToInsert != Integer.MIN_VALUE) addNodeUnbalanced(leftToInsert);
+            if (rightToInsert != Integer.MIN_VALUE) addNodeUnbalanced(rightToInsert);
+
+
+            leftIndex--;
+            rightIndex++;
+
         }
-        System.out.println("balanced");
+    }
+
+    private List<Node> getLeafNodes() {
+        return getLeafNodesRec(root, new LinkedList<>());
+    }
+
+    private List<Node> getLeafNodesRec(Node p, List<Node> list) {
+        if (p == null) return list;
+        if (p.isLeafNode()) list.add(p);
+        list = getLeafNodesRec(p.getLeft(), list);
+        list = getLeafNodesRec(p.getRight(), list);
+
+        return list;
+    }
+
+    public void printLeafNodes() {
+        for (Node n : getLeafNodes()) {
+            System.out.println(n.value);
+        }
     }
 
 
@@ -94,7 +164,7 @@ public class BalancedBinarySearchTree {
     }
 
     private List<Node> getNodeList() {
-        return getNodeListRec(root, new LinkedList<>());
+        return getNodeListRec(root, new ArrayList<>());
     }
 
     private List<Node> getNodeListRec(Node p, List<Node> list) {
@@ -151,12 +221,13 @@ public class BalancedBinarySearchTree {
         return size;
     }
 
-    ///////////////////Node/////////////////////
+    
 
     private class Node {
         private Node left;
         private int value;
         private Node right;
+        private Node parent;
 
         public Node() {
 
@@ -184,6 +255,29 @@ public class BalancedBinarySearchTree {
 
         public void setRight(Node right) {
             this.right = right;
+        }
+
+        private boolean isLeafNode() {
+            return !(right != null && left != null);
+        }
+
+        public Node getParent() {
+            return parent;
+        }
+
+        public void setParent(Node parent) {
+            this.parent = parent;
+        }
+
+        public int getHeight() {
+            int height = 0;
+            Node temp = this;
+            while (temp!= root) {
+                temp = temp.getParent();
+                height++;
+            }
+
+            return height;
         }
     }
 
